@@ -67,7 +67,7 @@ on:
 env:
   ###############手动修改##############
   OPENWRT_NAME: hanwckf
-  REPO_URL: https://github.com/hanwckf/immortalwrt-mt798x
+  REPO_URL: https://github.com/padavanonly/immortalwrt-mt798x
   REPO_BRANCH: openwrt-21.02
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: JDCloud-AX6000-Baili/.mtwifi-cfg.config
@@ -259,6 +259,7 @@ jobs:
         fi
         echo "FILE_DATE=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
+        
         
     - name: 查看磁盘使用情况
       if: (!cancelled())
