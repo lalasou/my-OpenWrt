@@ -8,17 +8,12 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 ###############手动修改##############
-name: JDCloud-AX6000-Baili-hanwckf
+name: Xiaomi-AX6000-padavanonly
 
 on:
   repository_dispatch:
   workflow_dispatch:
     inputs:
-      MAC_ORDER:
-        description: 'Use the original MAC address order'
-        required: true
-        default: true
-        type: boolean
       WA_FW:
         description: 'Choose mt_wifi firmware'
         required: true
@@ -42,18 +37,8 @@ on:
         - mt7986-fw-20230421
         - mt7986-fw-20230808
         - mt7986-fw-20231024
-      GSW:
-        description: 'Use GSW switch driver (non-DSA)'
-        required: true
-        default: false
-        type: boolean
       APP_MTK:
         description: 'Use luci-app-mtk wifi config'
-        required: true
-        default: false
-        type: boolean
-      NO_DOCKERMAN:
-        description: 'Not build luci-app-dockerman'
         required: true
         default: false
         type: boolean
@@ -66,7 +51,7 @@ on:
 
 env:
   ###############手动修改##############
-  OPENWRT_NAME: hanwckf
+  OPENWRT_NAME: padavanonly
   REPO_URL: https://github.com/padavanonly/immortalwrt-mt798x
   REPO_BRANCH: openwrt-21.02
   FEEDS_CONF: feeds.conf.default
@@ -144,21 +129,6 @@ jobs:
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
         
-    - name: 使用原厂MAC地址顺序
-      if: github.event.inputs.MAC_ORDER == 'true'
-      run: |
-        cd openwrt
-        ## 调换lan、wan的MAC地址
-        sed -i '/jdcloud,re-cp-03)/{n; s/wan_mac=$(mmc_get_mac_binary factory 0x2a)/wan_mac=$(mmc_get_mac_binary factory 0x24)/; n; s/lan_mac=$(mmc_get_mac_binary factory 0x24)/lan_mac=$(mmc_get_mac_binary factory 0x2A)/}' target/linux/mediatek/mt7986/base-files/etc/board.d/02_network
-        ## 创建一个辅助文件。文件内容是写入MAC地址到dat文件，固定wifi MAC地址
-        echo -e "\t\tlocal wifi0_mac=\"\$(mmc_get_mac_binary factory 0x04)\"
-        \t\tsed -i \"/^MacAddress=.*/ {s/.*/MacAddress=\$wifi0_mac/;b;}; \\\$aMacAddress=\$wifi0_mac\" /etc/wireless/mediatek/mt7986-ax6000.dbdc.b0.dat
-        \t\tlocal wifi1_mac=\"\$(macaddr_setbit_la \$wifi0_mac)\"
-        \t\tsed -i \"/^MacAddress=.*/ {s/.*/MacAddress=\$wifi1_mac/;b;}; \\\$aMacAddress=\$wifi1_mac\" /etc/wireless/mediatek/mt7986-ax6000.dbdc.b1.dat" > temp_insert.txt
-        ## 将文本内容写入02_network
-        sed -i '/mediatek_setup_macs()/,/exit/ {/jdcloud,re-cp-03)/ {n;n;n;r temp_insert.txt
-        }}' target/linux/mediatek/mt7986/base-files/etc/board.d/02_network
-        
     - name: 选择无线firmware
       run: |
         cp -r JDCloud-AX6000-Baili/firmware/mt_wifi/mt7986-fw-jdc openwrt/package/mtk/drivers/mt_wifi/files
@@ -175,14 +145,6 @@ jobs:
                 sed -i 's/^MT7986_NEW_WOFW_DIR := mt7986-fw.*/MT7986_NEW_WOFW_DIR := ${{github.event.inputs.WO_FW}}/g' package/mtk/drivers/warp/Makefile
         fi
         
-    - name: 使用GSW交换机驱动（非DSA）
-      if: github.event.inputs.GSW == 'true'
-      run: |
-        cp JDCloud-AX6000-Baili/mt7986a-gsw-jdcloud-re-cp-03.dts openwrt/target/linux/mediatek/files-5.4/arch/arm64/boot/dts/mediatek/mt7986a-jdcloud-re-cp-03.dts
-        cd openwrt
-        sed -i '/jdcloud,re-cp-03)/ {n; /lan1 lan2 lan3 lan4/ {s/lan1 lan2 lan3 lan4/eth0/; a\
-        \t\tucidef_add_switch "switch0" "1:lan" "2:lan" "3:lan" "4:lan" "6u@eth0"
-        }}' target/linux/mediatek/mt7986/base-files/etc/board.d/02_network
 
     - name: 使用luci-app-mtk无线配置
       if: github.event.inputs.APP_MTK == 'true'
@@ -192,14 +154,6 @@ jobs:
         sed -i 's/CONFIG_PACKAGE_luci-i18n-mtwifi-cfg-zh-cn=y/CONFIG_PACKAGE_luci-i18n-mtk-zh-cn=y/g' .config
         sed -i 's/CONFIG_PACKAGE_mtwifi-cfg=y/CONFIG_PACKAGE_wifi-profile=y/g' .config
         sed -i 's/CONFIG_PACKAGE_lua-cjson=y/CONFIG_WIFI_NORMAL_SETTING=y/g' .config
-        
-    - name: 取消编译dockerman
-      if: github.event.inputs.NO_DOCKERMAN == 'true'
-      run: |
-        cd openwrt
-        sed -i '/CONFIG_PACKAGE_luci-app-dockerman=y/d' .config
-        
-    
         
     - name: 下载安装包
       id: package
