@@ -12,11 +12,11 @@
 
 # Uncomment a feed source
 #sed -i 's/^#\(.*helloworld\)/\1/' feeds.conf.default
-sed -i 's|https://github.com/immortalwrt/luci|https://github.com/padavanonly/luci|g' feeds.conf.default
+#sed -i 's|https://github.com/immortalwrt/luci|https://github.com/padavanonly/luci|g' feeds.conf.default
 # Add a feed source
 #echo 'src-git helloworld https://github.com/fw876/helloworld' >>feeds.conf.default
 #echo 'src-git passwall https://github.com/xiaorouji/openwrt-passwall' >>feeds.conf.default
-git clone https://github.com/messense/aliyundrive-webdav package/messense
-git clone https://github.com/gdy666/luci-app-lucky package/lucky
-git clone https://github.com/destan19/OpenAppFilter package/OpenAppFilter
+#git clone https://github.com/messense/aliyundrive-webdav package/messense
+#git clone https://github.com/gdy666/luci-app-lucky package/lucky
+#git clone https://github.com/destan19/OpenAppFilter package/OpenAppFilter
 
