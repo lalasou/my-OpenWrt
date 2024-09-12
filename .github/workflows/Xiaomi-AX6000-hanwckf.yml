@@ -51,7 +51,7 @@ on:
 
 env:
   ###############手动修改##############
-  OPENWRT_NAME: padavanonly
+  OPENWRT_NAME: hanwckf
   REPO_URL: https://github.com/hanwckf/immortalwrt-mt798x
   REPO_BRANCH: openwrt-21.02
   FEEDS_CONF: feeds.conf.default
