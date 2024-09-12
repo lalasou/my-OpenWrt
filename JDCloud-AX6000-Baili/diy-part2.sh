@@ -12,7 +12,7 @@
 
 # Modify default IP
 sed -i 's/ImmortalWrt/TP-Link/g' package/base-files/files/bin/config_generate
-sed -i 's/192.168.6.1/192.168.10.1/g' package/base-files/files/bin/config_generate
+sed -i 's/192\.168\.\(1\|6\)\.1/192.168.10.1/g' package/base-files/files/bin/config_generate
 sed -i 's/ImmortalWrt/@FX_5G/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 ##-----------------Del duplicate packages------------------
 rm -rf feeds/packages/net/open-app-filter
