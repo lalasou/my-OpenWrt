@@ -37,11 +37,7 @@ on:
         - mt7986-fw-20230421
         - mt7986-fw-20230808
         - mt7986-fw-20231024
-      APP_MTK:
-        description: 'Use luci-app-mtk wifi config'
-        required: true
-        default: false
-        type: boolean
+
       ssh:
         description: 'SSH connection to Actions'
         required: false
@@ -145,16 +141,6 @@ jobs:
                 sed -i 's/^MT7986_NEW_WOFW_DIR := mt7986-fw.*/MT7986_NEW_WOFW_DIR := ${{github.event.inputs.WO_FW}}/g' package/mtk/drivers/warp/Makefile
         fi
         
-
-   # - name: 使用luci-app-mtk无线配置
-   #   if: github.event.inputs.APP_MTK == 'true'
-   #   run: |
-   #     cd openwrt
-   #     sed -i 's/CONFIG_PACKAGE_luci-app-mtwifi-cfg=y/CONFIG_PACKAGE_luci-app-mtk=y/g' .config
-   #     sed -i 's/CONFIG_PACKAGE_luci-i18n-mtwifi-cfg-zh-cn=y/CONFIG_PACKAGE_luci-i18n-mtk-zh-cn=y/g' .config
-   #     sed -i 's/CONFIG_PACKAGE_mtwifi-cfg=y/CONFIG_PACKAGE_wifi-profile=y/g' .config
-   #     sed -i 's/CONFIG_PACKAGE_lua-cjson=y/CONFIG_WIFI_NORMAL_SETTING=y/g' .config
-        
     - name: 下载安装包
       id: package
       run: |
@@ -200,11 +186,6 @@ jobs:
                 echo "WIFI_INTERFACE=-mtwifi" >> $GITHUB_ENV
         else
                 echo "WIFI_INTERFACE=" >> $GITHUB_ENV
-        fi
-        if grep -q 'CONFIG_PACKAGE_luci-app-dockerman=y' .config; then
-                echo "BUILD_DOCKERMAN=-docker" >> $GITHUB_ENV
-        else
-                echo "BUILD_DOCKERMAN=" >> $GITHUB_ENV
         fi
         echo "FILE_DATE=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
