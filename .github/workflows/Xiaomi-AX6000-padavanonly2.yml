@@ -37,11 +37,7 @@ on:
         - mt7986-fw-20230421
         - mt7986-fw-20230808
         - mt7986-fw-20231024
-      APP_MTK:
-        description: 'Use luci-app-mtk wifi config'
-        required: true
-        default: false
-        type: boolean
+
       ssh:
         description: 'SSH connection to Actions'
         required: false
@@ -51,9 +47,9 @@ on:
 
 env:
   ###############手动修改##############
-  OPENWRT_NAME: padavanonly
+  OPENWRT_NAME: hanwckf
   REPO_URL: https://github.com/padavanonly/immortalwrt-mt798x-23.05
-  REPO_BRANCH: openwrt-21.02
+  REPO_BRANCH: openwrt-23.05
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: JDCloud-AX6000-Baili/.mtwifi-cfg.config
   DIY_P1_SH: JDCloud-AX6000-Baili/diy-part1.sh
@@ -144,17 +140,13 @@ jobs:
         else
                 sed -i 's/^MT7986_NEW_WOFW_DIR := mt7986-fw.*/MT7986_NEW_WOFW_DIR := ${{github.event.inputs.WO_FW}}/g' package/mtk/drivers/warp/Makefile
         fi
-        
-
-   # - name: 使用luci-app-mtk无线配置
-   #   if: github.event.inputs.APP_MTK == 'true'
-   #   run: |
-   #     cd openwrt
-   #     sed -i 's/CONFIG_PACKAGE_luci-app-mtwifi-cfg=y/CONFIG_PACKAGE_luci-app-mtk=y/g' .config
-   #     sed -i 's/CONFIG_PACKAGE_luci-i18n-mtwifi-cfg-zh-cn=y/CONFIG_PACKAGE_luci-i18n-mtk-zh-cn=y/g' .config
-   #     sed -i 's/CONFIG_PACKAGE_mtwifi-cfg=y/CONFIG_PACKAGE_wifi-profile=y/g' .config
-   #     sed -i 's/CONFIG_PACKAGE_lua-cjson=y/CONFIG_WIFI_NORMAL_SETTING=y/g' .config
-        
+    - name: SSH链接管理
+      uses: P3TERX/ssh2actions@v1.0.0
+      if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
+      env:
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+                
     - name: 下载安装包
       id: package
       run: |
@@ -201,20 +193,9 @@ jobs:
         else
                 echo "WIFI_INTERFACE=" >> $GITHUB_ENV
         fi
-        if grep -q 'CONFIG_PACKAGE_luci-app-dockerman=y' .config; then
-                echo "BUILD_DOCKERMAN=-docker" >> $GITHUB_ENV
-        else
-                echo "BUILD_DOCKERMAN=" >> $GITHUB_ENV
-        fi
         echo "FILE_DATE=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
-    - name: SSH链接管理
-      uses: P3TERX/ssh2actions@v1.0.0
-      if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
-      env:
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        
+
     - name: 查看磁盘使用情况
       if: (!cancelled())
       run: df -hT
@@ -252,12 +233,13 @@ jobs:
         echo "- mt_wifi firmware: ${{ env.WA_FW }}" >> release.txt
         echo "- warp firmware: ${{ env.WO_FW }}" >> release.txt
         echo "- 使用GSW交换机驱动（非DSA）" >> release.txt
+
         if [[ "${{ env.WIFI_INTERFACE }}" == '-mtwifi' ]]; then
                 echo "- 使用hanwckf mtwifi-cfg原生luci无线配置工具" >> release.txt
         else
                 echo "- 使用mtk-sdk luci-app-mtk无线配置工具" >> release.txt
         fi
-        
+
         echo "release_tag=${{ env.FILE_DATE }}-${{ env.OPENWRT_NAME }}-${{ env.DEVICE_NAME }}${{ env.SWITCH }}${{ env.WIFI_INTERFACE }}${{ env.BUILD_DOCKERMAN }}" >> $GITHUB_OUTPUT
         echo "status=success" >> $GITHUB_OUTPUT
         
