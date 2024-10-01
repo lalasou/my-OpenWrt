@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 ###############手动修改##############
-name: Xiaomi-AX6000-padavanonly
+name: Xiaomi-AX6000-padavanonly2
 
 on:
   repository_dispatch:
