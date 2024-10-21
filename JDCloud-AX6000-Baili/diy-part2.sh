@@ -12,10 +12,10 @@
 
 # Modify default IP
 sed -i 's/ImmortalWrt/TP-Link/g' package/base-files/files/bin/config_generate
-sed -i 's/192\.168\.\(1\|6\)\.1/192.168.10.1/g' package/base-files/files/bin/config_generate
-sed -i 's/ImmortalWrt/@FX_5G/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+#sed -i 's/192\.168\.\(1\|6\)\.1/192.168.10.1/g' package/base-files/files/bin/config_generate
+#sed -i 's/ImmortalWrt/@FX_5G/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 ##-----------------Del duplicate packages------------------
-rm -rf feeds/packages/net/open-app-filter
+#rm -rf feeds/packages/net/open-app-filter
 ##-----------------Add OpenClash dev core------------------
 #curl -sL -m 30 --retry 2 https://raw.githubusercontent.com/vernesong/OpenClash/core/master/dev/clash-linux-arm64.tar.gz -o /tmp/clash.tar.gz
 #tar zxvf /tmp/clash.tar.gz -C /tmp >/dev/null 2>&1
