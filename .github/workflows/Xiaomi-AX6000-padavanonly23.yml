@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 ###############手动修改##############
-name: Xiaomi-AX6000-padavanonly2
+name: Xiaomi-AX6000-padavanonly23
 
 on:
   repository_dispatch:
@@ -51,7 +51,7 @@ env:
   REPO_URL: https://github.com/padavanonly/immortalwrt-mt798x-23.05
   REPO_BRANCH: openwrt-23.05
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: JDCloud-AX6000-Baili/23
+  CONFIG_FILE: JDCloud-AX6000-Baili/237ubootmini.config
   DIY_P1_SH: JDCloud-AX6000-Baili/diy-part1.sh
   DIY_P2_SH: JDCloud-AX6000-Baili/diy-part2.sh
   SSH_ACTIONS: false
@@ -168,31 +168,7 @@ jobs:
         [ -s TARGET_NAME ] && echo "TARGET_NAME=$(cat TARGET_NAME)" >> $GITHUB_ENV
         sed -nE 's/.*(192.168\.[0-9]+\.[0-9]+).*/\1/p' package/base-files/files/bin/config_generate | head -n 1 > IP_ADDR
         [ -s IP_ADDR ] && echo "IP_ADDR=$(cat IP_ADDR)" >> $GITHUB_ENV
-        if sed -n '/jdcloud,re-cp-03)/,/;;/p' target/linux/mediatek/mt7986/base-files/etc/board.d/02_network | grep -q 'wan_mac=$(mmc_get_mac_binary factory 0x24)'; then
-                echo "MAC_FIX=-MAC_fix" >> $GITHUB_ENV
-        else
-                echo "MAC_FIX=" >> $GITHUB_ENV
-        fi
-        if grep -q 'CONFIG_MTK_MT7986_NEW_FW=y' .config; then
-                echo "WA_FW=$(grep 'MT7986_FW_DIR :=' package/mtk/drivers/mt_wifi/Makefile | awk -F' ' '{print $3}')" >> $GITHUB_ENV
-        else
-                echo "WA_FW=no-new-fw" >> $GITHUB_ENV
-        fi
-        if grep -q 'CONFIG_WARP_NEW_FW=y' .config; then
-                echo "WO_FW=$(grep 'MT7986_NEW_WOFW_DIR :=' package/mtk/drivers/warp/Makefile | awk -F' ' '{print $3}')" >> $GITHUB_ENV
-        else
-                echo "WO_FW=no-new-fw" >> $GITHUB_ENV
-        fi
-        if sed -n '/jdcloud,re-cp-03)/,/;;/p' target/linux/mediatek/mt7986/base-files/etc/board.d/02_network | grep -q 'ucidef_add_switch "switch0"'; then
-                echo "SWITCH=-gsw" >> $GITHUB_ENV
-        else
-                echo "SWITCH=" >> $GITHUB_ENV
-        fi
-        if grep -q 'CONFIG_PACKAGE_mtwifi-cfg=y' .config; then
-                echo "WIFI_INTERFACE=-mtwifi" >> $GITHUB_ENV
-        else
-                echo "WIFI_INTERFACE=" >> $GITHUB_ENV
-        fi
+
         echo "FILE_DATE=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
@@ -207,7 +183,7 @@ jobs:
         cd openwrt/bin/targets/*/*
         rm -rf packages
         sudo -E apt-get -qq install rename
-        rename 's/.*${{ env.DEVICE_NAME }}/${{ env.FILE_DATE }}-${{ env.OPENWRT_NAME }}-${{ env.DEVICE_NAME }}${{ env.SWITCH }}${{ env.WIFI_INTERFACE }}${{ env.BUILD_DOCKERMAN }}/' *
+        rename 's/.*${{ env.DEVICE_NAME }}/${{ env.FILE_DATE }}-${{ env.OPENWRT_NAME }}-${{ env.DEVICE_NAME }}/' *
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
         
@@ -215,7 +191,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
-        name: ${{ env.FILE_DATE }}-${{ env.OPENWRT_NAME }}-${{ env.DEVICE_NAME }}${{ env.SWITCH }}${{ env.WIFI_INTERFACE }}${{ env.BUILD_DOCKERMAN }}
+        name: ${{ env.FILE_DATE }}-${{ env.OPENWRT_NAME }}-${{ env.DEVICE_NAME }}
         path: ${{ env.FIRMWARE }}
         
     - name: 生成固件Release标签
@@ -240,7 +216,7 @@ jobs:
                 echo "- 使用mtk-sdk luci-app-mtk无线配置工具" >> release.txt
         fi
 
-        echo "release_tag=${{ env.FILE_DATE }}-${{ env.OPENWRT_NAME }}-${{ env.DEVICE_NAME }}${{ env.SWITCH }}${{ env.WIFI_INTERFACE }}${{ env.BUILD_DOCKERMAN }}" >> $GITHUB_OUTPUT
+        echo "release_tag=${{ env.FILE_DATE }}-${{ env.OPENWRT_NAME }}-${{ env.DEVICE_NAME }}" >> $GITHUB_OUTPUT
         echo "status=success" >> $GITHUB_OUTPUT
         
     - name: 发布固件至Release
@@ -250,6 +226,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         files: ${{ env.FIRMWARE }}/*
-        name: ${{ env.FILE_DATE }}-${{ env.OPENWRT_NAME }}-${{ env.DEVICE_NAME }}${{ env.SWITCH }}${{ env.WIFI_INTERFACE }}${{ env.BUILD_DOCKERMAN }}
+        name: ${{ env.FILE_DATE }}-${{ env.OPENWRT_NAME }}-${{ env.DEVICE_NAME }}
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
