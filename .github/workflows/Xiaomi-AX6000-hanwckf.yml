@@ -128,15 +128,15 @@ jobs:
             echo "Invalid IP address, use default."
         fi
 
-    - name: 设置WiFi驱动版本
-      run: |
-        cd openwrt
-        if [ ${{ github.event.inputs.WIFI_DRIVER }} == 'v7.6.6.1' ]; then
-                sed -i 's/CONFIG_MTK_MT_WIFI_DRIVER_VERSION_7672=y/CONFIG_MTK_MT_WIFI_DRIVER_VERSION_7661=y/g' .config
-                echo "Use WiFi Driver: v7.6.6.1"
-        else
-                echo "Use WiFi Driver: v7.6.7.2"
-        fi
+   # - name: 设置WiFi驱动版本
+   #   run: |
+   #     cd openwrt
+   #     if [ ${{ github.event.inputs.WIFI_DRIVER }} == 'v7.6.6.1' ]; then
+   #             sed -i 's/CONFIG_MTK_MT_WIFI_DRIVER_VERSION_7672=y/CONFIG_MTK_MT_WIFI_DRIVER_VERSION_7661=y/g' .config
+   #             echo "Use WiFi Driver: v7.6.6.1"
+   #     else
+   #            echo "Use WiFi Driver: v7.6.7.2"
+   #     fi
 
     
     - name: SSH链接管理
