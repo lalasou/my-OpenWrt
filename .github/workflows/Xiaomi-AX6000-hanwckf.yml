@@ -26,14 +26,7 @@ on:
         options:
         - v7.6.7.2
         - v7.6.6.1
-      SW_DRIVER:
-        description: 'Choose Switch Driver'
-        required: true
-        default: 'GSW'
-        type: choice
-        options:
-        - GSW
-        - DSA
+    
       ssh:
         description: 'SSH connection to Actions'
         required: false
@@ -145,17 +138,7 @@ jobs:
                 echo "Use WiFi Driver: v7.6.7.2"
         fi
 
-    - name: 设置交换机驱动
-      run: |
-        if [ ${{ github.event.inputs.SW_DRIVER }} == 'DSA' ]; then
-                cp JDCloud-AX6000-Baili-hanwckf/mt7986a-dsa-jdcloud-re-cp-03.dts openwrt/target/linux/mediatek/files-5.4/arch/arm64/boot/dts/mediatek/mt7986a-jdcloud-re-cp-03.dts
-                cd openwrt
-                sed -i '/jdcloud,re-cp-03)/ {n; /eth0/ {s/eth0/lan1 lan2 lan3 lan4/; n; /ucidef_add_switch/ d}}' target/linux/mediatek/mt7986/base-files/etc/board.d/02_network
-                echo "Use Switch Driver: DSA"
-        else
-                echo "Use Switch Driver: GSW"
-        fi
-
+    
     - name: SSH链接管理
       uses: P3TERX/ssh2actions@v1.0.0
       if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
@@ -227,11 +210,6 @@ jobs:
                echo "- 使用WiFi驱动版本v7.6.6.1" >> release.txt
         else
                echo "- 使用WiFi驱动版本v7.6.7.2" >> release.txt
-        fi
-        if [[ "${{ env.SWITCH }}" == '-gsw' ]]; then
-               echo "- 使用GSW交换机驱动（非DSA）" >> release.txt
-        else
-               echo "- 使用DSA交换机驱动" >> release.txt
         fi
   
         echo "release_tag=${{ env.FILE_DATE }}-${{ env.OPENWRT_NAME }}-${{ env.DEVICE_NAME }}" >> $GITHUB_OUTPUT
