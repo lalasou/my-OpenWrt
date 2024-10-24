@@ -11,6 +11,8 @@
 name: Xiaomi-AX6000-hanwckf
 
 on:
+  schedule:
+    - cron: '55 20 * * *'
   repository_dispatch:
   workflow_dispatch:
     inputs:
