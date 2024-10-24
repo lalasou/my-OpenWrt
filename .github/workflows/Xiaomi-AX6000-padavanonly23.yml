@@ -107,7 +107,7 @@ jobs:
         
     - name: 加载feeds.conf.default & DIY_P1_SH
       run: |
-        [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
+        #[ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
         chmod +x $DIY_P1_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P1_SH
@@ -125,21 +125,21 @@ jobs:
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
         
-    - name: 选择无线firmware
-      run: |
-        cp -r JDCloud-AX6000-Baili/firmware/mt_wifi/mt7986-fw-jdc openwrt/package/mtk/drivers/mt_wifi/files
-        cp -r JDCloud-AX6000-Baili/firmware/warp/mt7986-fw-jdc openwrt/package/mtk/drivers/warp/files
-        cd openwrt
-        if [ ${{ github.event.inputs.WA_FW }} == 'no-new-fw' ]; then
-                sed -i '/CONFIG_MTK_MT7986_NEW_FW=y/d' .config
-        else
-                sed -i 's/^MT7986_FW_DIR := mt7986-fw.*/MT7986_FW_DIR := ${{github.event.inputs.WA_FW}}/g' package/mtk/drivers/mt_wifi/Makefile
-        fi
-        if [ ${{ github.event.inputs.WO_FW }} == 'no-new-fw' ]; then
-                sed -i '/CONFIG_WARP_NEW_FW=y/d' .config
-        else
-                sed -i 's/^MT7986_NEW_WOFW_DIR := mt7986-fw.*/MT7986_NEW_WOFW_DIR := ${{github.event.inputs.WO_FW}}/g' package/mtk/drivers/warp/Makefile
-        fi
+    #- name: 选择无线firmware
+    #  run: |
+    #    cp -r JDCloud-AX6000-Baili/firmware/mt_wifi/mt7986-fw-jdc openwrt/package/mtk/drivers/mt_wifi/files
+    #    cp -r JDCloud-AX6000-Baili/firmware/warp/mt7986-fw-jdc openwrt/package/mtk/drivers/warp/files
+    #    cd openwrt
+    #    if [ ${{ github.event.inputs.WA_FW }} == 'no-new-fw' ]; then
+    #            sed -i '/CONFIG_MTK_MT7986_NEW_FW=y/d' .config
+    #    else
+    #            sed -i 's/^MT7986_FW_DIR := mt7986-fw.*/MT7986_FW_DIR := ${{github.event.inputs.WA_FW}}/g' package/mtk/drivers/mt_wifi/Makefile
+    #    fi
+    #    if [ ${{ github.event.inputs.WO_FW }} == 'no-new-fw' ]; then
+    #            sed -i '/CONFIG_WARP_NEW_FW=y/d' .config
+    #    else
+    #            sed -i 's/^MT7986_NEW_WOFW_DIR := mt7986-fw.*/MT7986_NEW_WOFW_DIR := ${{github.event.inputs.WO_FW}}/g' package/mtk/drivers/warp/Makefile
+    #    fi
     - name: SSH链接管理
       uses: P3TERX/ssh2actions@v1.0.0
       if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
