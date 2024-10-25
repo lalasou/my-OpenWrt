@@ -41,7 +41,7 @@ env:
   OPENWRT_NAME: hanwckf
   REPO_URL: https://github.com/hanwckf/immortalwrt-mt798x
   REPO_BRANCH: openwrt-21.02
-  FEEDS_CONF: JDCloud-AX6000-Baili/feeds.conf.default
+  FEEDS_CONF: JDCloud-AX6000-Baili/lgsfeeds
   CONFIG_FILE: JDCloud-AX6000-Baili/.mtwifi-cfg.config
   DIY_P1_SH: JDCloud-AX6000-Baili/diy-part1.sh
   DIY_P2_SH: JDCloud-AX6000-Baili/diy-part2.sh
@@ -102,6 +102,7 @@ jobs:
         [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
         chmod +x $DIY_P1_SH
         cd openwrt
+        
         $GITHUB_WORKSPACE/$DIY_P1_SH
 
     - name: 更新 & 安装 feeds
@@ -115,6 +116,7 @@ jobs:
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x $DIY_P2_SH
         cd openwrt
+        #sed -i 's/CONFIG_MTK_MT_WIFI_DRIVER_VERSION_7672=y/CONFIG_MTK_MT_WIFI_DRIVER_VERSION_7661=y/g' .config
         $GITHUB_WORKSPACE/$DIY_P2_SH
 
     - name: 设置LAN IP地址（路由器登录地址）
@@ -131,10 +133,10 @@ jobs:
             echo "Invalid IP address, use default."
         fi
 
-   # - name: 设置WiFi驱动版本
-   #   run: |
-   #     cd openwrt
-   #     if [ ${{ github.event.inputs.WIFI_DRIVER }} == 'v7.6.6.1' ]; then
+    - name: 设置WiFi驱动版本
+      run: |
+        cd openwrt
+        cp $GITHUB_WORKSPACE/JDCloud-AX6000-Baili/mt79xx_20231229-4012a0_mt7986-fw-20240823.tar.xz dl/mt79xx_20231229-4012a0.tar.xz
    #             sed -i 's/CONFIG_MTK_MT_WIFI_DRIVER_VERSION_7672=y/CONFIG_MTK_MT_WIFI_DRIVER_VERSION_7661=y/g' .config
    #             echo "Use WiFi Driver: v7.6.6.1"
    #     else
