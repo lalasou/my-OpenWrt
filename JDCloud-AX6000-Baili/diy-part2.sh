@@ -12,6 +12,7 @@
 
 # Modify default IP
 sed -i 's/ImmortalWrt/TPLink/g' package/base-files/files/bin/config_generate
+git clone https://github.com/MilesPoupart/luci-app-design-config.git package/luci-app-design-config
 #sed -i 's/192\.168\.\(1\|6\)\.1/192.168.10.1/g' package/base-files/files/bin/config_generate
 #sed -i 's/ImmortalWrt/@FX_5G/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 ##-----------------Del duplicate packages------------------
