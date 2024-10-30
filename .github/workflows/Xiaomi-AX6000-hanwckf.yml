@@ -33,6 +33,10 @@ on:
         description: 'SSH connection to Actions'
         required: false
         default: 'false'
+      ssh2:
+        description: 'SSH2 connection to Actions'
+        required: false
+        default: 'false'
 #  schedule:
 #    - cron: 0 16 * * *
 
@@ -185,17 +189,24 @@ jobs:
       if: (!cancelled())
       run: df -hT
 
-    - name: Set up SSH
-      run: |
-        mkdir -p ~/.ssh/
-        echo "${{ secrets.SSHKEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H 39.162.224.172 >> ~/.ssh/known_hosts
-    - name: Deploy via SSH
-      run: |
-        make package/luci-app-design-config/compile V=99
-        scp -P 61041 -r root@39.162.224.172:/path/to/openwrt/bin/packages /tmp
-      continue-on-error: true
+   # - name: Set up SSH
+     # run: |
+     #   mkdir -p ~/.ssh/
+    #    echo "${{ secrets.SSHKEY }}" > ~/.ssh/id_rsa
+   #    chmod 600 ~/.ssh/id_rsa
+    #    ssh-keyscan -H 39.162.224.172 >> ~/.ssh/known_hosts
+   # - name: Deploy via SSH
+     # run: |
+       # make package/luci-app-design-config/compile V=99
+      #  scp -P 61041 -r root@39.162.224.172:/path/to/openwrt/bin/packages /tmp
+      #continue-on-error: true
+
+    - name: SSH链接管理2
+      uses: P3TERX/ssh2actions@v1.0.0
+      if: (github.event.inputs.ssh2 == 'true' && github.event.inputs.ssh2  != 'false') || contains(github.event.action, 'ssh2')
+      env:
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       
     - name: 整理文件并重命名
       id: organize
