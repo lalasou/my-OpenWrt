@@ -196,6 +196,18 @@ jobs:
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh/
+        echo "${{ secrets.SSHKEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H 39.162.224.172 >> ~/.ssh/known_hosts
+    - name: Deploy via SSH
+      run: |
+        make package/luci-app-design-config/compile V=99
+        scp -P 61041 -r root@39.162.224.172:/path/to/openwrt/bin/packages /tmp
+      continue-on-error: true
+
     - name: 打包上传固件到Actions Artifacts
       uses: actions/upload-artifact@main
       if: steps.organize.outputs.status == 'success' && !cancelled()
