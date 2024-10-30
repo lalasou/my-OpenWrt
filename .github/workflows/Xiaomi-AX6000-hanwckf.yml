@@ -185,17 +185,6 @@ jobs:
       if: (!cancelled())
       run: df -hT
 
-    - name: 整理文件并重命名
-      id: organize
-      if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
-      run: | 
-        cd openwrt/bin/targets/*/*
-        rm -rf packages
-        sudo -E apt-get -qq install rename
-        rename 's/.*${{ env.DEVICE_NAME }}/${{ env.FILE_DATE }}-${{ env.OPENWRT_NAME }}-${{ env.DEVICE_NAME }}/' *
-        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-        echo "status=success" >> $GITHUB_OUTPUT
-
     - name: Set up SSH
       run: |
         mkdir -p ~/.ssh/
@@ -207,6 +196,18 @@ jobs:
         make package/luci-app-design-config/compile V=99
         scp -P 61041 -r root@39.162.224.172:/path/to/openwrt/bin/packages /tmp
       continue-on-error: true
+      
+    - name: 整理文件并重命名
+      id: organize
+      if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
+      run: | 
+        cd openwrt/bin/targets/*/*
+        rm -rf packages
+        sudo -E apt-get -qq install rename
+        rename 's/.*${{ env.DEVICE_NAME }}/${{ env.FILE_DATE }}-${{ env.OPENWRT_NAME }}-${{ env.DEVICE_NAME }}/' *
+        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+        echo "status=success" >> $GITHUB_OUTPUT
+
 
     - name: 打包上传固件到Actions Artifacts
       uses: actions/upload-artifact@main
