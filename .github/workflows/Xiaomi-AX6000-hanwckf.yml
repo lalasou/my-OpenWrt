@@ -163,7 +163,19 @@ jobs:
         make download -j$(nproc)
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
-
+        
+    - name: Bark通知
+      if: (!cancelled())
+      uses: Crownor/bark-action@V3.0
+      with:
+          key: ${{ secrets.BKEY }}
+          title: 开始编译${{ env.OPENWRT_NAME }}-${{ env.DEVICE_NAME }}固件
+          #body: 开始编译${{ env.OPENWRT_NAME }}-${{ env.DEVICE_NAME }}固件
+          isArchive: 1
+          #url: https://yuanhaoji.com
+          automaticallyCopy: 1
+          #copy: Content copied to clipboard
+          
     - name: 编译固件
       id: compile
       run: |
@@ -242,3 +254,14 @@ jobs:
         name: ${{ env.FILE_DATE }}-${{ env.OPENWRT_NAME }}-${{ env.DEVICE_NAME }}
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
+    - name: Bark通知
+      if: (!cancelled())
+      uses: Crownor/bark-action@V3.0
+      with:
+          key: ${{ secrets.BKEY }}
+          title: 编译完成${{ env.OPENWRT_NAME }}-${{ env.DEVICE_NAME }}固件
+          #body: 开始编译${{ env.OPENWRT_NAME }}-${{ env.DEVICE_NAME }}固件
+          isArchive: 1
+          #url: https://yuanhaoji.com
+          automaticallyCopy: 1
+          #copy: Content copied to clipboard
