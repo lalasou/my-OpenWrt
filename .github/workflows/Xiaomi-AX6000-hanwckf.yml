@@ -189,18 +189,6 @@ jobs:
       if: (!cancelled())
       run: df -hT
 
-   # - name: Set up SSH
-     # run: |
-     #   mkdir -p ~/.ssh/
-    #    echo "${{ secrets.SSHKEY }}" > ~/.ssh/id_rsa
-   #    chmod 600 ~/.ssh/id_rsa
-    #    ssh-keyscan -H 39.162.224.172 >> ~/.ssh/known_hosts
-   # - name: Deploy via SSH
-     # run: |
-       # make package/luci-app-design-config/compile V=99
-      #  scp -P 61041 -r root@39.162.224.172:/path/to/openwrt/bin/packages /tmp
-      #continue-on-error: true
-
     - name: SSH链接管理2
       uses: P3TERX/ssh2actions@v1.0.0
       if: (github.event.inputs.ssh2 == 'true' && github.event.inputs.ssh2  != 'false') || contains(github.event.action, 'ssh2')
