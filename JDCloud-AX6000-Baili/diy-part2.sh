@@ -15,6 +15,10 @@ sed -i 's/ImmortalWrt/TPLink/g' package/base-files/files/bin/config_generate
 git clone https://github.com/MilesPoupart/luci-app-design-config.git package/luci-app-design-config
 #sed -i 's/192\.168\.\(1\|6\)\.1/192.168.10.1/g' package/base-files/files/bin/config_generate
 #sed -i 's/ImmortalWrt/@FX_5G/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+
+cp $GITHUB_WORKSPACE/JDCloud-AX6000-Baili/smartdns package/net/smartdns/Makefile
+
+
 ##-----------------Del duplicate packages------------------
 #rm -rf feeds/packages/net/open-app-filter
 ##-----------------Add OpenClash dev core------------------
