@@ -20,4 +20,4 @@
 #git clone https://github.com/gdy666/luci-app-lucky package/lucky
 #git clone https://github.com/destan19/OpenAppFilter package/OpenAppFilter
 
-git clone https://github.com/animegasan/luci-app-wolplus package/luci-app-wolplus
+#git clone https://github.com/animegasan/luci-app-wolplus package/luci-app-wolplus
