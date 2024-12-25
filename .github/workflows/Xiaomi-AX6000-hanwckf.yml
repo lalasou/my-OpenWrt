@@ -221,7 +221,7 @@ jobs:
 
 
     - name: 打包上传固件到Actions Artifacts
-      uses: actions/upload-artifact@main
+      uses: softprops/action-gh-release@v2.2.0
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
         name: ${{ env.FILE_DATE }}-${{ env.OPENWRT_NAME }}-${{ env.DEVICE_NAME }}
