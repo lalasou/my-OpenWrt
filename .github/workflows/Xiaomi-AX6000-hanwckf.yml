@@ -46,7 +46,7 @@ env:
   REPO_URL: https://github.com/hanwckf/immortalwrt-mt798x
   REPO_BRANCH: openwrt-21.02
   FEEDS_CONF: JDCloud-AX6000-Baili/lgsfeeds
-  CONFIG_FILE: JDCloud-AX6000-Baili/newtest
+  CONFIG_FILE: JDCloud-AX6000-Baili/ax6000.config
   DIY_P1_SH: JDCloud-AX6000-Baili/diy-part1.sh
   DIY_P2_SH: JDCloud-AX6000-Baili/diy-part2.sh
   SSH_ACTIONS: false
