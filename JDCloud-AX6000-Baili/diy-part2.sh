@@ -17,6 +17,7 @@ git clone https://github.com/MilesPoupart/luci-app-design-config.git package/luc
 #sed -i 's/ImmortalWrt/@FX_5G/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 cat $GITHUB_WORKSPACE/JDCloud-AX6000-Baili/sysctl.conf > package/base-files/files/etc/sysctl.conf
+sed -i '48,54d' ‎package/base-files/files/bin/config_generate
 
 
 ##-----------------Del duplicate packages------------------
