@@ -116,7 +116,7 @@ jobs:
         WORKINGDI="`pwd`/feeds/packages/net/smartdns"
         mkdir $WORKINGDI -p
         rm $WORKINGDI/* -fr
-        wget https://github.com/pymumu/openwrt-smartdns/archive/master.zip -O $WORKINGDI/master.zip
+        wget https://gh-proxy.com/https://github.com/pymumu/openwrt-smartdns/archive/refs/heads/master.zip -O $WORKINGDI/master.zip
         unzip $WORKINGDI/master.zip -d $WORKINGDI
         mv $WORKINGDI/openwrt-smartdns-master/* $WORKINGDI/
         rmdir $WORKINGDI/openwrt-smartdns-master
