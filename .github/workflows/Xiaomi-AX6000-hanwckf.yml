@@ -113,24 +113,6 @@ jobs:
       run: |
         cd openwrt
         ./scripts/feeds update -a
-        WORKINGDI="`pwd`/feeds/packages/net/smartdns"
-        mkdir $WORKINGDI -p
-        rm $WORKINGDI/* -fr
-        wget https://gh-proxy.com/https://github.com/pymumu/openwrt-smartdns/archive/refs/heads/master.zip -O $WORKINGDI/master.zip
-        unzip $WORKINGDI/master.zip -d $WORKINGDI
-        mv $WORKINGDI/openwrt-smartdns-master/* $WORKINGDI/
-        rmdir $WORKINGDI/openwrt-smartdns-master
-        rm $WORKINGDI/master.zip
-
-        LUCIBRANCH="master" #更换此变量
-        WORKINGDIR="`pwd`/feeds/luci/applications/luci-app-smartdns"
-        mkdir $WORKINGDI -p
-        rm $WORKINGDI/* -fr
-        wget https://github.com/pymumu/luci-app-smartdns/archive/${LUCIBRANCH}.zip -O $WORKINGDI/${LUCIBRANCH}.zip
-        unzip $WORKINGDI/${LUCIBRANCH}.zip -d $WORKINGDI
-        mv $WORKINGDI/luci-app-smartdns-${LUCIBRANCH}/* $WORKINGDI/
-        rmdir $WORKINGDI/luci-app-smartdns-${LUCIBRANCH}
-        rm $WORKINGDI/${LUCIBRANCH}.zip
 
         ./scripts/feeds install -a
 
